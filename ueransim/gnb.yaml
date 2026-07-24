@@ -1,0 +1,20 @@
+mcc: '999'
+mnc: '70'
+
+nci: '0x000000010'
+idLength: 32
+tac: 1
+
+linkIp: 10.33.33.5
+ngapIp: 10.33.33.5
+gtpIp: 10.33.33.5
+
+# Open5GS AMF (core container)
+amfConfigs:
+  - address: 10.33.33.4
+    port: 38412
+
+slices:
+  - sst: 1
+
+ignoreStreamIds: true

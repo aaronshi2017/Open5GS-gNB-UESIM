@@ -1,0 +1,73 @@
+# Open5GS + UERANSIM lab on Raspberry Pi 4 (arm64)
+# Requires: 64-bit OS (Ubuntu Server 22.04/24.04 arm64 or Raspberry Pi OS 64-bit), Docker + compose plugin
+networks:
+  n5g:
+    ipam:
+      config:
+        - subnet: 10.33.33.0/24
+
+volumes:
+  mongo-data:
+
+services:
+  # Pi 4 = Cortex-A72 (ARMv8.0): MongoDB >= 5.0 will NOT run. Keep 4.4.18.
+  mongo:
+    image: mongo:4.4.18
+    command: mongod --bind_ip 0.0.0.0
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      n5g:
+        ipv4_address: 10.33.33.3
+
+  # All Open5GS NFs in one container (user request: single core container)
+  core:
+    image: gradiant/open5gs:2.7.2   # multi-arch (arm64). If tag missing, check hub.docker.com/r/gradiant/open5gs/tags
+    entrypoint: ["/bin/bash", "/config/start.sh"]
+    privileged: true
+    user: root
+    cap_add: [NET_ADMIN]
+    devices: ["/dev/net/tun"]
+    sysctls:
+      net.ipv4.ip_forward: 1
+    volumes:
+      - ./core:/config
+    depends_on: [mongo]
+    restart: unless-stopped
+    networks:
+      n5g:
+        ipv4_address: 10.33.33.4
+
+  # Subscriber provisioning UI at http://<pi-ip>:9999 (admin / 1423)
+  webui:
+    image: gradiant/open5gs-webui:2.7.2
+    environment:
+      - DB_URI=mongodb://mongo/open5gs
+    ports:
+      - "9999:9999"
+    depends_on: [mongo]
+    networks: [n5g]
+
+  gnb:
+    image: gradiant/ueransim:3.2.6   # multi-arch; fallback: build ./ueransim/Dockerfile
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["exec nr-gnb -c /config/gnb.yaml"]
+    volumes:
+      - ./ueransim:/config
+    depends_on: [core]
+    networks:
+      n5g:
+        ipv4_address: 10.33.33.5
+
+  ue:
+    image: gradiant/ueransim:3.2.6
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["exec nr-ue -c /config/ue.yaml"]
+    cap_add: [NET_ADMIN]
+    devices: ["/dev/net/tun"]
+    volumes:
+      - ./ueransim:/config
+    depends_on: [gnb]
+    networks:
+      n5g:
+        ipv4_address: 10.33.33.6

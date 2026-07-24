@@ -1,0 +1,21 @@
+logger:
+  file:
+    path: /opt/open5gs/var/log/open5gs/udm.log
+global:
+  max:
+    ue: 64
+udm:
+  hnet:
+    - id: 1
+      scheme: 1
+      key: /opt/open5gs/etc/open5gs/hnet/curve25519-1.key
+    - id: 2
+      scheme: 2
+      key: /opt/open5gs/etc/open5gs/hnet/secp256r1-2.key
+  sbi:
+    server:
+      - address: 127.0.0.12
+        port: 7777
+    client:
+      scp:
+        - uri: http://127.0.0.200:7777
