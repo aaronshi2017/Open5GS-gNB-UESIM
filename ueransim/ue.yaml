@@ -1,4 +1,3 @@
-# IMSI must exist in the Open5GS subscriber DB (WebUI) with the same key/opc
 supi: 'imsi-999700000000001'
 mcc: '999'
 mnc: '70'
@@ -31,6 +30,10 @@ uacAcc:
 sessions:
   - type: 'IPv4'
     apn: 'internet'
+    slice:
+      sst: 1
+  - type: 'IPv4'
+    apn: 'ims'
     slice:
       sst: 1
 

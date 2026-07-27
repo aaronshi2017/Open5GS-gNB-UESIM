@@ -34,7 +34,14 @@ smf:
     - subnet: 10.45.0.0/16
       gateway: 10.45.0.1
       dnn: internet
+    - subnet: 10.46.0.0/16
+      gateway: 10.46.0.1
+      dnn: ims
+      dev: ogstun2
+      p-cscf:
+        - 10.33.33.7
   dns:
     - 8.8.8.8
     - 8.8.4.4
   mtu: 1400
+

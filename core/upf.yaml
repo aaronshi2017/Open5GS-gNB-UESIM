@@ -16,6 +16,9 @@ upf:
   session:
     - subnet: 10.45.0.0/16
       gateway: 10.45.0.1
+    - subnet: 10.46.0.0/16
+      gateway: 10.46.0.1
+      dev: ogstun2
   metrics:
     server:
       - address: 127.0.0.7
