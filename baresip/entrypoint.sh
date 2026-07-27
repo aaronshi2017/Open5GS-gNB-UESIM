@@ -16,11 +16,12 @@ audio_player       ausine
 audio_source       ausine,440
 audio_alert        ausine,880
 module             stdio.so
+module             account.so
 module             ausine.so
 module             g711.so
 module_app         menu.so
 CFG
 cat > /root/.baresip/accounts <<ACC
-<sip:${SIP_USER}@ims.mnc070.mcc999.3gppnetwork.org>;outbound="sip:10.33.33.7:5060";regint=300;mediaenc=none
+<sip:${SIP_USER}@ims.mnc070.mcc999.3gppnetwork.org>;outbound="sip:10.33.33.7:5060";regint=300
 ACC
 exec baresip -v -f /root/.baresip
