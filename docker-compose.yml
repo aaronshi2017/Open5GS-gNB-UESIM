@@ -51,7 +51,7 @@ services:
   gnb:
     image: gradiant/ueransim:3.2.6   # multi-arch; fallback: build ./ueransim/Dockerfile
     entrypoint: ["/bin/bash", "-c"]
-    command: ["until (echo > /dev/tcp/10.33.33.4/38412) 2>/dev/null; do echo Waiting for AMF at 10.33.33.4:38412...; sleep 2; done; exec nr-gnb -c /config/gnb.yaml"]
+    command: ["sleep 15; exec nr-gnb -c /config/gnb.yaml"]
     volumes:
       - ./ueransim:/config
     depends_on: [core]
