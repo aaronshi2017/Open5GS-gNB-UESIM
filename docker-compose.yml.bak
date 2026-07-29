@@ -50,8 +50,8 @@ services:
 
   gnb:
     image: gradiant/ueransim:3.2.6   # multi-arch; fallback: build ./ueransim/Dockerfile
-    entrypoint: ["/bin/bash", "-c"]
-    command: ["until (echo > /dev/tcp/10.33.33.4/38412) 2>/dev/null; do echo Waiting for AMF at 10.33.33.4:38412...; sleep 2; done; exec nr-gnb -c /config/gnb.yaml"]
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["exec nr-gnb -c /config/gnb.yaml"]
     volumes:
       - ./ueransim:/config
     depends_on: [core]
@@ -60,9 +60,7 @@ services:
         ipv4_address: 10.33.33.5
 
   ue:
-    build:
-      context: ./ueransim
-    image: open5gs-lab-ue-tools:3.2.6
+    image: gradiant/ueransim:3.2.6
     entrypoint: ["/bin/sh", "-c"]
     command: ["exec nr-ue -c /config/ue.yaml"]
     cap_add: [NET_ADMIN]
@@ -85,9 +83,7 @@ services:
 
 
   ue2:
-    build:
-      context: ./ueransim
-    image: open5gs-lab-ue-tools:3.2.6
+    image: gradiant/ueransim:3.2.6
     entrypoint: ["/bin/sh", "-c"]
     command: ["exec nr-ue -c /config/ue2.yaml"]
     cap_add: [NET_ADMIN]
